@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Microsoft.Extensions.Configuration;
 using StoreManagement.Models;
+using StoreManagement.Models.Dtos;
 using StoreManagement.Repository.IRepository;
 using System;
 using System.Collections.Generic;
@@ -54,35 +55,35 @@ namespace StoreManagement.Repository
             }
         }
 
-        public async Task<Product> GetProduct(int pId)
+        public async Task<ProductDto> GetProduct(int pId)
         {
-            var sql = "SELECT * FROM Product WHERE productId = @Id;";
+            var sql = "SELECT [productId], [productName], [productDescription], [productPrice], [categoryId], [categoryName] FROM view1 WHERE productId = @Id;";
             using(var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
-                var result = await connection.QueryAsync<Product>(sql, new { Id = pId });
+                var result = await connection.QueryAsync<ProductDto>(sql, new { Id = pId });
                 return result.FirstOrDefault();
             }
         }
 
-        public async Task<IEnumerable<Product>> GetProducts()
+        public async Task<IEnumerable<ProductDto>> GetProducts()
         {
-            var sql = "SELECT * FROM Product;";
+            var sql = "SELECT [productId], [productName], [productDescription], [productPrice], [categoryId], [categoryName] FROM view1;";
             using(var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
-                var products = await connection.QueryAsync<Product>(sql);
+                var products = await connection.QueryAsync<ProductDto>(sql);
                 return products;
             }
         }
 
-        public async Task<IEnumerable<Product>> GetProductsInCategory(string cName)
+        public async Task<IEnumerable<ProductDto>> GetProductsInCategory(string cName)
         {
-            var sql = "SELECT [productId], [productName], [productDescription], [productPrice], [categoryId] FROM view1 WHERE categoryName = @cName;";
+            var sql = "SELECT [productId], [productName], [productDescription], [productPrice], [categoryId], [categoryName] FROM view1 WHERE categoryName = @cName;";
             using(var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
-                var products = await connection.QueryAsync<Product>(sql, new { cName = cName });
+                var products = await connection.QueryAsync<ProductDto>(sql, new { cName = cName });
                 return products;
             }
         }
