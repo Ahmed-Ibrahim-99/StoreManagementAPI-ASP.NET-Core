@@ -57,7 +57,7 @@ namespace StoreManagement.Repository
 
         public async Task<ProductDto> GetProduct(int pId)
         {
-            var sql = "SELECT [productId], [productName], [productDescription], [productPrice], [categoryId], [categoryName] FROM view1 WHERE productId = @Id;";
+            var sql = "SELECT [productId], [productName], [productDescription], [productPrice], [categoryId], [categoryName] FROM GetProductsWithCategories WHERE productId = @Id;";
             using(var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
@@ -68,7 +68,7 @@ namespace StoreManagement.Repository
 
         public async Task<IEnumerable<ProductDto>> GetProducts()
         {
-            var sql = "SELECT [productId], [productName], [productDescription], [productPrice], [categoryId], [categoryName] FROM view1;";
+            var sql = "SELECT [productId], [productName], [productDescription], [productPrice], [categoryId], [categoryName] FROM GetProductsWithCategories;";
             using(var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
@@ -79,7 +79,7 @@ namespace StoreManagement.Repository
 
         public async Task<IEnumerable<ProductDto>> GetProductsInCategory(string cName)
         {
-            var sql = "SELECT [productId], [productName], [productDescription], [productPrice], [categoryId], [categoryName] FROM view1 WHERE categoryName = @cName;";
+            var sql = "SELECT [productId], [productName], [productDescription], [productPrice], [categoryId], [categoryName] FROM GetProductsWithCategories WHERE categoryName = @cName;";
             using(var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
