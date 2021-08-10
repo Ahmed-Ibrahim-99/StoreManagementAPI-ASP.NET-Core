@@ -12,6 +12,7 @@
 
 - Database First Approach
 - Creating Models
+- Creating DTOs
 - Creating Repository Pattern
 - Using Dapper
 - Creating Controllers
