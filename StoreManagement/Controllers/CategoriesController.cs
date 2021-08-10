@@ -86,5 +86,24 @@ namespace StoreManagement.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteCategory(int id)
+        {
+            var exists = await _cRepo.CategoryExistsById(id);
+            if (exists == false)
+            {
+                return NotFound();
+            }
+            var success = await _cRepo.DeleteCategory(id);
+            if (success)
+            {
+                return NoContent();
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
     }
 }

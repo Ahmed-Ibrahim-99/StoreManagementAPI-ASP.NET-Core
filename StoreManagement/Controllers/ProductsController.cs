@@ -93,5 +93,24 @@ namespace StoreManagement.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteProduct(int id)
+        {
+            var exists = await _pRepo.ProductExistsById(id);
+            if (exists == false)
+            {
+                return NotFound();
+            }
+            var success = await _pRepo.DeleteProduct(id);
+            if (success)
+            {
+                return NoContent();
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
     }
 }
