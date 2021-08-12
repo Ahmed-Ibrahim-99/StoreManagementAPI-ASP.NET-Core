@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using StoreManagement.Helpers;
 using StoreManagement.Repository;
 using StoreManagement.Repository.IRepository;
 using System;
@@ -17,16 +18,18 @@ namespace StoreManagement
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
-
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors();
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
@@ -47,7 +50,12 @@ namespace StoreManagement
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            app.UseCors(x => x
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
+
+            app.UseMiddleware<JwtMiddleware>().UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

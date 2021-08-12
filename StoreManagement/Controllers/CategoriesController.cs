@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using StoreManagement.Helpers;
 using StoreManagement.Models;
 using StoreManagement.Repository.IRepository;
 using System;
@@ -11,6 +12,7 @@ namespace StoreManagement.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CategoriesController : ControllerBase
     {
         private ICategoryRepository _cRepo;
