@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static StoreManagement.Models.Enums.LogEnums;
 
 namespace StoreManagement.Controllers
 {
@@ -16,15 +17,20 @@ namespace StoreManagement.Controllers
     public class ProductsController : ControllerBase
     {
         private IProductRepository _pRepo;
-        public ProductsController(IProductRepository pRepo)
+        private ILogRepository _lRepo;
+        
+        public ProductsController(IProductRepository pRepo, ILogRepository lRepo)
         {
             _pRepo = pRepo;
+            _lRepo = lRepo;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetProducts()
         {
             var objList = await _pRepo.GetProducts();
+            var userId = (int) HttpContext.Items["UserId"];
+            await _lRepo.CreateLog(TableEnum.Product, ActionEnum.Read, userId);
             return Ok(objList);
         }
 
@@ -32,6 +38,8 @@ namespace StoreManagement.Controllers
         public async Task<IActionResult> GetProductsByCategory(string cName)
         {
             var objList = await _pRepo.GetProductsInCategory(cName);
+            var userId = (int)HttpContext.Items["UserId"];
+            await _lRepo.CreateLog(TableEnum.Product, ActionEnum.Read, userId);
             return Ok(objList);
         }
 
@@ -39,7 +47,9 @@ namespace StoreManagement.Controllers
         public async Task<IActionResult> GetProduct(int pId)
         {
             var obj = await _pRepo.GetProduct(pId);
-            if(obj == null)
+            var userId = (int)HttpContext.Items["UserId"];
+            await _lRepo.CreateLog(TableEnum.Product, ActionEnum.Read, userId);
+            if (obj == null)
             {
                 return NotFound();
             }
@@ -49,7 +59,7 @@ namespace StoreManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateProduct([FromBody] Product product)
         {
-            if(product == null)
+            if (product == null)
             {
                 return BadRequest();
             }
@@ -61,6 +71,8 @@ namespace StoreManagement.Controllers
             var success = await _pRepo.CreateProduct(product);
             if(success)
             {
+                var userId = (int)HttpContext.Items["UserId"];
+                await _lRepo.CreateLog(TableEnum.Product, ActionEnum.Create, userId);
                 return StatusCode(StatusCodes.Status201Created, "Row Created Successfully");
             }
             else
@@ -88,6 +100,8 @@ namespace StoreManagement.Controllers
             var success = await _pRepo.UpdateProduct(product);
             if(success)
             {
+                var userId = (int) HttpContext.Items["UserId"];
+                await _lRepo.CreateLog(TableEnum.Product, ActionEnum.Update, userId);
                 return NoContent();
             }
             else
@@ -107,6 +121,8 @@ namespace StoreManagement.Controllers
             var success = await _pRepo.DeleteProduct(id);
             if (success)
             {
+                var userId = (int)HttpContext.Items["UserId"];
+                await _lRepo.CreateLog(TableEnum.Product, ActionEnum.Delete, userId);
                 return NoContent();
             }
             else

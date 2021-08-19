@@ -35,6 +35,7 @@ namespace StoreManagement
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ISignupRepository, SignupRepository>();
             services.AddScoped<ILoginRepository, LoginRepository>();
+            services.AddScoped<ILogRepository, LogRepository>();
             services.AddControllers();
         }
 

@@ -30,6 +30,10 @@ namespace StoreManagement.Helpers
             {
                 await attachUserToContext(context, uRepo, token);
             }
+            else
+            {
+                context.Items["UserFound"] = false;
+            }
             await _next(context);
         }
 
@@ -50,11 +54,19 @@ namespace StoreManagement.Helpers
                 var jwtToken = (JwtSecurityToken)validatedToken;
                 var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "id").Value);
                 var user = await uRepo.GetUserById(userId);
-                context.Items["User"] = user;
+                if(user != null)
+                {
+                    context.Items["UserFound"] = true;
+                    context.Items["UserId"] = userId;
+                }
+                else
+                {
+                    context.Items["UserFound"] = false;
+                }
             }
             catch
             {
-
+                context.Items["UserFound"] = false;
             }
         }
     }

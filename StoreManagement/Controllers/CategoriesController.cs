@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static StoreManagement.Models.Enums.LogEnums;
 
 namespace StoreManagement.Controllers
 {
@@ -16,15 +17,19 @@ namespace StoreManagement.Controllers
     public class CategoriesController : ControllerBase
     {
         private ICategoryRepository _cRepo;
-        public CategoriesController(ICategoryRepository cRepo)
+        private ILogRepository _lRepo;
+        public CategoriesController(ICategoryRepository cRepo, ILogRepository lRepo)
         {
             _cRepo = cRepo;
+            _lRepo = lRepo;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetCategories()
         {
             var objList = await _cRepo.GetCategories();
+            var userId = (int)HttpContext.Items["UserId"];
+            await _lRepo.CreateLog(TableEnum.Category, ActionEnum.Read, userId);
             return Ok(objList);
         }
 
@@ -32,6 +37,8 @@ namespace StoreManagement.Controllers
         public async Task<IActionResult> GetCategory(int cId)
         {
             var obj = await _cRepo.GetCategory(cId);
+            var userId = (int)HttpContext.Items["UserId"];
+            await _lRepo.CreateLog(TableEnum.Category, ActionEnum.Read, userId);
             if (obj == null)
             {
                 return NotFound();
@@ -54,6 +61,8 @@ namespace StoreManagement.Controllers
             var success = await _cRepo.CreateCategory(category);
             if (success)
             {
+                var userId = (int)HttpContext.Items["UserId"];
+                await _lRepo.CreateLog(TableEnum.Category, ActionEnum.Create, userId);
                 return StatusCode(StatusCodes.Status201Created, "Row Created Successfully");
             }
             else
@@ -81,6 +90,8 @@ namespace StoreManagement.Controllers
             var success = await _cRepo.UpdateCategory(category);
             if (success)
             {
+                var userId = (int)HttpContext.Items["UserId"];
+                await _lRepo.CreateLog(TableEnum.Category, ActionEnum.Update, userId);
                 return NoContent();
             }
             else
@@ -100,6 +111,8 @@ namespace StoreManagement.Controllers
             var success = await _cRepo.DeleteCategory(id);
             if (success)
             {
+                var userId = (int)HttpContext.Items["UserId"];
+                await _lRepo.CreateLog(TableEnum.Category, ActionEnum.Delete, userId);
                 return NoContent();
             }
             else
