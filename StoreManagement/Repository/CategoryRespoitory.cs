@@ -65,14 +65,14 @@ namespace StoreManagement.Repository
             }
         }
 
-        public async Task<IEnumerable<Category>> GetCategories()
+        public async Task<IQueryable<Category>> GetCategories()
         {
             var sql = "SELECT * FROM Category;";
             using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
                 var categories = await connection.QueryAsync<Category>(sql);
-                return categories;
+                return categories.AsQueryable<Category>();
             }
         }
 

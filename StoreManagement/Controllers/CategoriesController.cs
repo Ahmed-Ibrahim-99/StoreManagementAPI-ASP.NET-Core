@@ -25,12 +25,25 @@ namespace StoreManagement.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetCategories()
+        public async Task<IActionResult> GetCategories(int? pageNumber, int? pageSize, string? sort)
         {
+            int currentPageNumber = pageNumber ?? 1;
+            int currentPageSize = pageSize ?? 5;
             var objList = await _cRepo.GetCategories();
             var userId = (int)HttpContext.Items["UserId"];
             await _lRepo.CreateLog(TableEnum.Category, ActionEnum.Read, userId);
-            return Ok(objList);
+            switch (sort)
+            {
+                case "desc":
+                    objList = objList.OrderByDescending(p => p.categoryName);
+                    break;
+                case "asc":
+                    objList = objList.OrderBy(p => p.categoryName);
+                    break;
+                default:
+                    break;
+            }
+            return Ok(objList.Skip((currentPageNumber - 1) * currentPageSize).Take(currentPageSize));
         }
 
         [HttpGet("byId/{cId}")]

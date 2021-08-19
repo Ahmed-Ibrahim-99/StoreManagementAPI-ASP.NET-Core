@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using StoreManagement.Models;
+using StoreManagement.Models.Dtos;
 using StoreManagement.Repository.IRepository;
 using System;
 using System.Collections.Generic;
@@ -26,21 +27,47 @@ namespace StoreManagement.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetProducts()
+        public async Task<IActionResult> GetProducts(int? pageNumber, int? pageSize, string? sort)
         {
+            int currentPageNumber = pageNumber ?? 1;
+            int currentPageSize = pageSize ?? 5;
             var objList = await _pRepo.GetProducts();
             var userId = (int) HttpContext.Items["UserId"];
             await _lRepo.CreateLog(TableEnum.Product, ActionEnum.Read, userId);
-            return Ok(objList);
+            switch (sort)
+            {
+                case "desc":
+                    objList = objList.OrderByDescending(p => p.productPrice);
+                    break;
+                case "asc":
+                    objList = objList.OrderBy(p => p.productPrice);
+                    break;
+                default:
+                    break;
+            }
+            return Ok(objList.Skip((currentPageNumber - 1) * currentPageSize).Take(currentPageSize));
         }
 
         [HttpGet("byCat/{cName}")]
-        public async Task<IActionResult> GetProductsByCategory(string cName)
+        public async Task<IActionResult> GetProductsByCategory(string cName, int? pageNumber, int? pageSize, string? sort)
         {
+            int currentPageNumber = pageNumber ?? 1;
+            int currentPageSize = pageSize ?? 5;
             var objList = await _pRepo.GetProductsInCategory(cName);
             var userId = (int)HttpContext.Items["UserId"];
             await _lRepo.CreateLog(TableEnum.Product, ActionEnum.Read, userId);
-            return Ok(objList);
+            switch (sort)
+            {
+                case "desc":
+                    objList = objList.OrderByDescending(p => p.productPrice);
+                    break;
+                case "asc":
+                    objList = objList.OrderBy(p => p.productPrice);
+                    break;
+                default:
+                    break;
+            }
+            return Ok(objList.Skip((currentPageNumber - 1) * currentPageSize).Take(currentPageSize));
         }
 
         [HttpGet("byId/{pId}")]

@@ -9,8 +9,8 @@ namespace StoreManagement.Repository.IRepository
 {
     public interface IProductRepository
     {
-        Task<IEnumerable<ProductDto>> GetProducts();
-        Task<IEnumerable<ProductDto>> GetProductsInCategory(string cName);
+        Task<IQueryable<ProductDto>> GetProducts();
+        Task<IQueryable<ProductDto>> GetProductsInCategory(string cName);
         Task<ProductDto> GetProduct(int pId);
         Task<bool> CreateProduct(Product product);
         Task<bool> UpdateProduct(Product product);

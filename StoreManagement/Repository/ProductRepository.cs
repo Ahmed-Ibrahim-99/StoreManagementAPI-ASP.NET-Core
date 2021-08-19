@@ -66,25 +66,25 @@ namespace StoreManagement.Repository
             }
         }
 
-        public async Task<IEnumerable<ProductDto>> GetProducts()
+        public async Task<IQueryable<ProductDto>> GetProducts()
         {
             var sql = "SELECT [productId], [productName], [productDescription], [productPrice], [categoryId], [categoryName] FROM GetProductsWithCategories;";
             using(var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
                 var products = await connection.QueryAsync<ProductDto>(sql);
-                return products;
+                return products.AsQueryable<ProductDto>();
             }
         }
 
-        public async Task<IEnumerable<ProductDto>> GetProductsInCategory(string cName)
+        public async Task<IQueryable<ProductDto>> GetProductsInCategory(string cName)
         {
             var sql = "SELECT [productId], [productName], [productDescription], [productPrice], [categoryId], [categoryName] FROM GetProductsWithCategories WHERE categoryName = @cName;";
             using(var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
                 var products = await connection.QueryAsync<ProductDto>(sql, new { cName = cName });
-                return products;
+                return products.AsQueryable<ProductDto>();
             }
         }
 

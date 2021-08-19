@@ -8,7 +8,7 @@ namespace StoreManagement.Repository.IRepository
 {
     public interface ICategoryRepository
     {
-        Task<IEnumerable<Category>> GetCategories();
+        Task<IQueryable<Category>> GetCategories();
         Task<Category> GetCategory(int cId);
         Task<bool> CreateCategory(Category category);
         Task<bool> UpdateCategory(Category category);
