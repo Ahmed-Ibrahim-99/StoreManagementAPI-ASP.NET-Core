@@ -16,6 +16,8 @@
 - Creating Repository Pattern
 - Using Dapper
 - Creating Controllers
+- Authentication and JWT tokens
+- Logging
 - All is done for creating simple RESTful APIs for Store Management Simulation
 
 ***
