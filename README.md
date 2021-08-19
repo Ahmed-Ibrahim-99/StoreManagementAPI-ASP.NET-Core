@@ -18,6 +18,8 @@
 - Creating Controllers
 - Authentication and JWT tokens
 - Logging
+- Sorting
+- Pagination
 - All is done for creating simple RESTful APIs for Store Management Simulation
 
 ***
